@@ -1,14 +1,33 @@
 // src/agents/preprocessor.js
-// Text preprocessing agent
+const natural = require('natural');
+const { AppError } = require('../utils/errorHandler');
 
 function preprocessText(text) {
-  // TODO: Implement text preprocessing
-  // 1. Remove special characters
-  // 2. Convert text to lowercase
-  // 3. Tokenize the text
-  return text // Placeholder return
+  if (!text || typeof text !== 'string') {
+    throw new AppError('Invalid input: text must be a non-empty string', 400);
+  }
+
+  // Convert text to lowercase
+  let processedText = text.toLowerCase();
+
+  // Remove special characters, keeping only letters, numbers, and spaces
+  processedText = processedText.replace(/[^a-z0-9\s]/g, '');
+
+  // Tokenize the text
+  const tokenizer = new natural.WordTokenizer();
+  const tokens = tokenizer.tokenize(processedText);
+
+  // Remove stop words
+  const stopwords = new Set(natural.stopwords);
+  const filteredTokens = tokens.filter(token => !stopwords.has(token));
+
+  return {
+    originalText: text,
+    processedText: processedText,
+    tokens: filteredTokens
+  };
 }
 
 module.exports = {
   preprocessText,
-}
+};

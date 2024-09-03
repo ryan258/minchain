@@ -4,19 +4,16 @@
   "description": "Minimal AI Agent Chain",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
   },
-  "keywords": [
-    "AI",
-    "agent",
-    "chain",
-    "NLP"
-  ],
+  "keywords": ["AI", "agent", "chain", "NLP"],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
-    "commander": "^8.0.0"
+    "chalk": "^4.1.2",
+    "commander": "^8.0.0",
+    "natural": "^5.1.13"
   }
 }

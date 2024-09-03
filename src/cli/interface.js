@@ -1,20 +1,30 @@
 // src/cli/interface.js
-// Command-line interface for the application
+const { program } = require('commander');
+const { handleError } = require('../utils/errorHandler');
 
-const { program } = require('commander')
+function setupCliInterface(runAgentChain) {
+  program
+    .version('1.0.0')
+    .description('MinChain - Minimal AI Agent Chain');
 
-function setupCliInterface() {
-  // TODO: Set up CLI commands using Commander.js
-  // Example:
-  // program
-  //   .command('analyze <text>')
-  //   .description('Analyze the given text')
-  //   .action((text) => {
-  //     // Call the main agent chain function
-  //   });
-  // program.parse(process.argv);
+  program
+    .command('analyze <text>')
+    .description('Analyze the given text')
+    .action(async (text) => {
+      try {
+        const result = await runAgentChain(text);
+        if (result) {
+          console.log('Analysis Result:');
+          console.log(JSON.stringify(result, null, 2));
+        }
+      } catch (error) {
+        handleError(error);
+      }
+    });
+
+  program.parse(process.argv);
 }
 
 module.exports = {
   setupCliInterface,
-}
+};

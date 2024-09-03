@@ -1,25 +1,36 @@
 // src/index.js
-// Main entry point for the MinChain application
-
-const preprocessor = require('./agents/preprocessor')
-const analyzer = require('./agents/analyzer')
-const localApi = require('./api/localApi')
-const cliInterface = require('./cli/interface')
-const errorHandler = require('./utils/errorHandler')
+const { preprocessText } = require('./agents/preprocessor');
+const { analyzeText } = require('./agents/analyzer');
+const { callLocalApi } = require('./api/localApi');
+const cliInterface = require('./cli/interface');
+const { handleError } = require('./utils/errorHandler');
 
 async function runAgentChain(input) {
   try {
-    // TODO: Implement the main agent chain logic
-    // 1. Preprocess the input
-    // 2. Analyze the preprocessed text
-    // 3. Return the results
+    // Preprocess the input
+    const preprocessedData = preprocessText(input);
+
+    // Analyze the preprocessed text
+    const analysisResult = await analyzeText(preprocessedData.processedText);
+
+    // Use local API for advanced processing
+    const apiPrompt = `Analyze the following text and provide insights: "${preprocessedData.processedText}"`;
+    const apiResult = await callLocalApi(apiPrompt);
+
+    return {
+      ...preprocessedData,
+      analysis: analysisResult,
+      apiInsights: apiResult,
+    };
   } catch (error) {
-    errorHandler.handleError(error)
+    handleError(error);
+    return null;
   }
 }
 
-// TODO: Set up CLI interface and handle user input
+// Set up CLI interface and handle user input
+cliInterface.setupCliInterface(runAgentChain);
 
 module.exports = {
   runAgentChain,
-}
+};
